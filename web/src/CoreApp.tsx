@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { ArrowLeft, Eye, WifiOff } from 'lucide-react';
 import LiveDemo from './components/LiveDemo';
-import SecretAudio from './components/SecretAudio';
 import { withSecret } from './lib/secret';
 
 export default function CoreApp() {
@@ -28,7 +27,6 @@ export default function CoreApp() {
       <div className="min-h-0 flex-1">
         <LiveDemo onAlarm={setAlarmOn} fullscreen />
       </div>
-      <SecretAudio />
     </main>
   );
 }

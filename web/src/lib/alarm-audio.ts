@@ -8,6 +8,17 @@ export const BUILT_IN_AUDIO: Record<string, string> = {
 export const DEFAULT_ALARM = 'nfpa-fire-alarm';
 export const BUILT_IN_ALARM_IDS = Object.keys(BUILT_IN_AUDIO);
 
+export interface ArtistTrack {
+  id: string;
+  file: string;
+  label: string;
+  bytes: number;
+}
+export const ARTIST_TRACKS: ArtistTrack[] = [
+  { id: 'artist-addiction-bass-boosted', file: 'addiction-bass-boosted.mp3', label: 'babyusoshy - lonown - addiction bass boost sped up.mp3', bytes: 3674401 },
+  { id: 'artist-addiction', file: 'addiction.mp3', label: 'LONOWN - LONOWN Asenssia - addiction.mp3', bytes: 5068049 },
+];
+
 
 export class AlarmAudio {
   private ctx: AudioContext | null = null;
@@ -44,7 +55,12 @@ export class AlarmAudio {
   private label(id: string): string {
     if (id === 'nfpa-fire-alarm') return 'NFPA fire alarm (instant)';
     if (id === 'motorsirene') return 'SAHRA Motorsirene (gradual)';
+    if (id.startsWith('artist-')) return 'artist track';
     return 'custom alarm';
+  }
+
+  private artistFile(id: string): string | undefined {
+    return ARTIST_TRACKS.find((t) => t.id === id)?.file;
   }
 
   private async fetchBytes(id: string): Promise<ArrayBuffer> {
@@ -53,10 +69,11 @@ export class AlarmAudio {
       if (!blob) throw new Error('custom alarm missing from local storage — re-add it');
       return blob.arrayBuffer();
     }
-    const file = BUILT_IN_AUDIO[id] || BUILT_IN_AUDIO[DEFAULT_ALARM];
-    const src = (window as any).__SAHRA_URLS__?.[file] || `${import.meta.env.BASE_URL}audio/${file}`;
+    const artist = this.artistFile(id);
+    const file = artist ?? BUILT_IN_AUDIO[id] ?? BUILT_IN_AUDIO[DEFAULT_ALARM];
+    const src = (window as any).__SAHRA_URLS__?.[file] || `${import.meta.env.BASE_URL}${artist ? `audio-artists/${file}` : `audio/${file}`}`;
     const res = await fetch(src);
-    if (!res.ok) throw new Error(`built-in alarm fetch failed (HTTP ${res.status})`);
+    if (!res.ok) throw new Error(`alarm fetch failed (HTTP ${res.status})`);
     return res.arrayBuffer();
   }
 

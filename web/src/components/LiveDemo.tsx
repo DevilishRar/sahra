@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import { Camera, Download, Gauge, Mic, Music2, Power, Save, ShieldCheck, Siren, SlidersHorizontal, Trash2, Upload, Volume2, VolumeX } from 'lucide-react';
 import { SahraEngine, type SahraSnapshot, type Sensitivity } from '../lib/sahra-engine';
 import { deleteCustomAlarm, listCustomAlarms, saveCustomAlarm, type CustomAlarmMeta } from '../lib/alarm-store';
-import { DEFAULT_ALARM } from '../lib/alarm-audio';
+import { ARTIST_TRACKS, DEFAULT_ALARM } from '../lib/alarm-audio';
+import { hasSecret } from '../lib/secret';
 
 const STATUS_META: Record<SahraSnapshot['status'], { label: string; className: string; dot: string }> = {
   idle: { label: 'READY', className: 'text-sahra-muted border-night-line', dot: 'bg-sahra-muted' },
@@ -204,6 +205,7 @@ export default function LiveDemo({ onAlarm, fullscreen = false }: { onAlarm: (on
             <select aria-label="Alarm sound" value={alarmId} onChange={(e) => changeAlarm(e.target.value)} className="w-full rounded-lg border border-violet-300/20 bg-black/40 px-3 py-2 text-xs font-semibold text-white outline-none focus:border-violet-300/60">
               <option value="nfpa-fire-alarm">SAHRA NFPA Fire Alarm — instant, full volume</option>
               <option value="motorsirene">SAHRA Motorsirene — gradual siren</option>
+              {hasSecret() && ARTIST_TRACKS.map((track) => <option key={track.id} value={track.id}>{track.label} · {formatBytes(track.bytes)}</option>)}
               {customAlarms.map((alarm) => <option key={alarm.id} value={alarm.id}>{alarm.name} · {formatBytes(alarm.size)}</option>)}
             </select>
             <input id="sahra-custom-alarm-file" type="file" accept="audio/*,.mp3,.wav,.ogg,.m4a,.flac,.opus,.aac" className="sr-only" onChange={uploadAlarm} />

@@ -23,7 +23,6 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import LiveDemo from './components/LiveDemo';
-import SecretAudio from './components/SecretAudio';
 import { withSecret } from './lib/secret';
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
@@ -385,7 +384,6 @@ export default function App() {
           <span className="inline-flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-emerald-400" /> assists the driver</span>
         </div>
       </footer>
-      <SecretAudio />
     </main>
   );
 }

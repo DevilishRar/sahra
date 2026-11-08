@@ -162,7 +162,7 @@ export class SahraEngine {
   setAlarmId(id: string) {
     this.alarmId = id;
     try { localStorage.setItem('sahra_alarm_id', id); } catch {  }
-    this.log(`alarm sound: ${id === 'nfpa-fire-alarm' ? 'NFPA fire alarm (instant)' : id === 'motorsirene' ? 'SAHRA Motorsirene (gradual)' : 'custom alarm'}`);
+    this.log(`alarm sound: ${id === 'nfpa-fire-alarm' ? 'NFPA fire alarm (instant)' : id === 'motorsirene' ? 'SAHRA Motorsirene (gradual)' : id.startsWith('artist-') ? 'artist track' : 'custom alarm'}`);
     void this.alarm.preload(id);
     this.pushSnapshot();
   }
